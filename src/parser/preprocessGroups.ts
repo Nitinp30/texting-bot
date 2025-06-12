@@ -1,8 +1,9 @@
 import { Group } from '../interfaces';
+import { isValidGroup } from '../utils/validate';
 import { normalizeString } from '../utils/normalize'
 
 export const preprocessGroups = (groups: Group[]): Array<Group & { normalizedName: string }> => {
-  const validGroups = groups
+    const validGroups = groups.filter(isValidGroup);
 
   const normalizedGroupsMap = new Map<string, Group & { normalizedName: string }>();
   for (const group of validGroups) {
