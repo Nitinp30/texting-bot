@@ -38,6 +38,23 @@ import { ParseTextBotCommandOutput, Group } from './interfaces';
  */
 
 export const parseTextBotCommand = (rawInput: string, groups: Group[]): ParseTextBotCommandOutput | null => {
+  if (!rawInput || typeof rawInput !== 'string') {
+    return null;
+  }
+  
+  if (!groups || !Array.isArray(groups)) {
+    return null;
+  }
+  
+  const trimmedInput = rawInput.trim();
+
+  if (trimmedInput.length < 4) {
+    return null;
+  }
+
+  if (!trimmedInput.toLowerCase().startsWith('txt ')) {
+    return null;
+  }
   return {
     groupId: '1',
     messageToSend: 'foo',
