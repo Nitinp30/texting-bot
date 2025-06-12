@@ -1,4 +1,7 @@
 import { ParseTextBotCommandOutput, Group } from './interfaces';
+import { preprocessGroups } from './parser/preprocessGroups';
+import { findMatchingGroup } from './parser/findMatchingGroup';
+import { extractMessage } from './parser/extractMessage'
 /**
  * We're writing a command line program that users can use to send text messages
  * to different groups of people. The program will take in a string, and parse it
@@ -55,8 +58,26 @@ export const parseTextBotCommand = (rawInput: string, groups: Group[]): ParseTex
   if (!trimmedInput.toLowerCase().startsWith('txt ')) {
     return null;
   }
+
+  const afterTxt = trimmedInput.slice(3);
+  if (!afterTxt || afterTxt.trim().length === 0) {
+    return null;
+  }
+  
+  
+  const preprocessedGroups = preprocessGroups(groups);
+
+  const match = findMatchingGroup(afterTxt, preprocessedGroups);
+
+  if (!match) {
+    return null;
+  }
+
+  const message = extractMessage(afterTxt, match.messageStart);
+  
   return {
-    groupId: '1',
-    messageToSend: 'foo',
+    groupId: match.group.id,
+    messageToSend: message
   };
+
 };
